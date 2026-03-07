@@ -2,3 +2,8 @@ export 'welcome_screen.dart';
 export 'login_screen.dart';
 export 'signup_screen.dart';
 export 'home_screen.dart';
+export 'event_list_screen.dart';
+export 'event_detail_screen.dart';
+export 'admin_dashboard_screen.dart';
+export 'add_event_screen.dart';
+export 'user_registrations_screen.dart';

@@ -36,6 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _handleSignup() {
+    debugPrint('Signup button pressed');
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -47,6 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
         return;
       }
 
+      debugPrint('Form valid, dispatching SignupEvent');
       context.read<AuthBloc>().add(
             SignupEvent(
               name: _fullNameController.text.trim(),
@@ -68,6 +70,8 @@ class _SignupScreenState extends State<SignupScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
+        title: const Text('EventFlow'),
+        centerTitle: true,
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -75,8 +79,13 @@ class _SignupScreenState extends State<SignupScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
-            // Navigate to home screen
-            Navigator.of(context).pushReplacementNamed('/home');
+            // Navigate based on user role
+            final isAdmin = state.user.userType == 'admin';
+            if (isAdmin) {
+              Navigator.of(context).pushReplacementNamed('/admin-dashboard');
+            } else {
+              Navigator.of(context).pushReplacementNamed('/events');
+            }
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

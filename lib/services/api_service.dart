@@ -58,6 +58,48 @@ class ApiService {
     }
   }
 
+  Future<Response> put({
+    required String endpoint,
+    required Map<String, dynamic> data,
+    String? token,
+  }) async {
+    try {
+      final headers = <String, dynamic>{};
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final response = await dio.put(
+        endpoint,
+        data: data,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> delete({
+    required String endpoint,
+    String? token,
+  }) async {
+    try {
+      final headers = <String, dynamic>{};
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final response = await dio.delete(
+        endpoint,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   void setToken(String token) {
     dio.options.headers['Authorization'] = 'Bearer $token';
   }

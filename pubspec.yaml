@@ -51,6 +51,7 @@ dependencies:
   
   # Validation
   validators: ^3.0.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

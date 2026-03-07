@@ -14,11 +14,15 @@ class User extends Equatable {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    // Handle both 'role' and 'userType' from API
+    final role = json['role'] ?? json['userType'] ?? 'user';
+
     return User(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      fullName: json['fullName'] as String,
-      userType: json['userType'] as String? ?? 'user',
+      id: json['id'].toString(),
+      email: json['email'] as String? ?? '',
+      fullName:
+          json['fullName'] as String? ?? json['full_name'] as String? ?? '',
+      userType: role.toString().toLowerCase(), // Ensure it's 'admin' or 'user'
     );
   }
 

@@ -60,14 +60,13 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 60),
 
-                // User Login Button
+                // Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed('/login', arguments: false);
+                      Navigator.of(context).pushNamed('/login');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -76,7 +75,7 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'User Login',
+                      'Login',
                       style: TextStyle(
                         color: Color(0xFF6366F1),
                         fontSize: 16,
@@ -87,27 +86,44 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Admin Login Button
+                // Sign Up Button
                 SizedBox(
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed('/login', arguments: true);
+                      Navigator.of(context).pushNamed('/signup');
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      side: const BorderSide(color: Colors.white, width: 2),
+                      backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Color(0xFF6366F1),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Admin Login Link
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed('/login', arguments: true);
+                    },
+                    child: Text(
                       'Admin Login',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

@@ -1,3 +1,6 @@
+import 'package:event_app/blocs/event_event.dart';
+import 'package:event_app/blocs/registration_bloc.dart';
+import 'package:event_app/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/auth_bloc.dart';
@@ -9,6 +12,12 @@ import 'views/screens/welcome_screen.dart';
 import 'views/screens/login_screen.dart';
 import 'views/screens/signup_screen.dart';
 import 'views/screens/home_screen.dart';
+import 'views/screens/event_list_screen.dart';
+import 'views/screens/event_detail_screen.dart';
+import 'views/screens/admin_dashboard_screen.dart';
+import 'views/screens/add_event_screen.dart';
+import 'views/screens/user_registrations_screen.dart';
+import 'blocs/event_bloc.dart';
 
 void main() {
   setupServiceLocator();
@@ -25,6 +34,13 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           create: (context) =>
               getIt<AuthBloc>()..add(const CheckAuthStatusEvent()),
+        ),
+        BlocProvider<EventBloc>(
+          create: (context) =>
+              getIt<EventBloc>()..add(const FetchEventsEvent()),
+        ),
+        BlocProvider<RegistrationBloc>(
+          create: (context) => getIt<RegistrationBloc>(),
         ),
       ],
       child: MaterialApp(
@@ -55,6 +71,28 @@ class MyApp extends StatelessWidget {
         );
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case '/events':
+        return MaterialPageRoute(builder: (_) => const EventListScreen());
+      case '/event-details':
+        final event = settings.arguments as Event?;
+        return MaterialPageRoute(
+          builder: (_) => EventDetailScreen(event: event),
+        );
+      case '/admin-dashboard':
+        return MaterialPageRoute(builder: (_) => const AdminDashboardScreen());
+      case '/add-event':
+        final event = settings.arguments as Event?;
+        return MaterialPageRoute(
+          builder: (_) => AddEventScreen(event: event),
+        );
+      case '/edit-event':
+        final event = settings.arguments as Event?;
+        return MaterialPageRoute(
+          builder: (_) => AddEventScreen(event: event),
+        );
+      case '/my-registrations':
+        return MaterialPageRoute(
+            builder: (_) => const UserRegistrationsScreen());
       default:
         return MaterialPageRoute(builder: (_) => const WelcomeScreen());
     }
