@@ -34,6 +34,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         location: event.location,
         date: event.date,
         imageUrl: event.imageUrl,
+        imageBytes: event.imageBytes,
+        imageName: event.imageName,
         token: token,
       );
       add(FetchEventsEvent());
@@ -59,6 +61,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         location: event.location,
         date: event.date,
         imageUrl: event.imageUrl,
+        imageBytes: event.imageBytes,
+        imageName: event.imageName,
         token: token,
       );
       add(FetchEventsEvent());

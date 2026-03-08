@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 abstract class EventEvent {
   const EventEvent();
 }
@@ -8,13 +10,17 @@ class CreateEventEvent extends EventEvent {
   final String location;
   final DateTime date;
   final String imageUrl;
+  final List<int>? imageBytes;
+  final String? imageName;
 
   CreateEventEvent({
     required this.title,
     required this.description,
     required this.location,
     required this.date,
-    required this.imageUrl,
+    this.imageUrl = '',
+    this.imageBytes,
+    this.imageName,
   });
 }
 
@@ -25,6 +31,8 @@ class UpdateEventEvent extends EventEvent {
   final String location;
   final DateTime date;
   final String imageUrl;
+  final List<int>? imageBytes;
+  final String? imageName;
 
   UpdateEventEvent({
     required this.eventId,
@@ -32,7 +40,9 @@ class UpdateEventEvent extends EventEvent {
     required this.description,
     required this.location,
     required this.date,
-    required this.imageUrl,
+    this.imageUrl = '',
+    this.imageBytes,
+    this.imageName,
   });
 }
 

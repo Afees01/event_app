@@ -46,6 +46,7 @@ class WelcomeScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
+                        fontFamily: "poppins",
                       ),
                 ),
                 const SizedBox(height: 16),
@@ -105,25 +106,6 @@ class WelcomeScreen extends StatelessWidget {
                       style: TextStyle(
                         color: Color(0xFF6366F1),
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Admin Login Link
-                Center(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed('/login', arguments: true);
-                    },
-                    child: Text(
-                      'Admin Login',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

@@ -146,25 +146,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             ),
             const SizedBox(height: 24),
 
-            // View Details Button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GestureDetector(
-                onTap: () {
-                  // Navigate to full details
-                },
-                child: Text(
-                  'View Details',
-                  style: TextStyle(
-                    color: const Color(0xFF6366F1),
-                    fontWeight: FontWeight.w600,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
             // Description Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -203,8 +184,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       builder: (context, state) {
         // Check if user is admin
         bool isAdmin = false;
-        if (state is AuthSuccess) {
-          isAdmin = state.user.userType == 'admin';
+        if (state is AuthSuccess || state is AuthAuthenticated) {
+          final user = state is AuthSuccess
+              ? state.user
+              : (state as AuthAuthenticated).user;
+          isAdmin = user.userType == 'admin';
         }
 
         if (isAdmin) {

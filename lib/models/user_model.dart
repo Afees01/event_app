@@ -20,8 +20,10 @@ class User extends Equatable {
     return User(
       id: json['id'].toString(),
       email: json['email'] as String? ?? '',
-      fullName:
-          json['fullName'] as String? ?? json['full_name'] as String? ?? '',
+      fullName: json['name'] as String? ??
+          json['fullName'] as String? ??
+          json['full_name'] as String? ??
+          '',
       userType: role.toString().toLowerCase(), // Ensure it's 'admin' or 'user'
     );
   }

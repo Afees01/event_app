@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../blocs/event_bloc.dart';
 import '../../blocs/event_event.dart';
 import '../../blocs/event_state.dart';
@@ -25,6 +29,10 @@ class _AddEventScreenState extends State<AddEventScreen> {
   late TextEditingController _dateController;
   late TextEditingController _imageUrlController;
   DateTime? _selectedDate;
+  File? _imageFile;
+  Uint8List? _imageBytes;
+  String? _imageName;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -85,6 +93,13 @@ class _AddEventScreenState extends State<AddEventScreen> {
         return;
       }
 
+      String imageUrl = _imageUrlController.text.trim();
+      if (_imageFile != null) {
+        imageUrl = _imageFile!.path; // We'll pass the local path to EventService
+      } else if (imageUrl.isEmpty) {
+        imageUrl = 'https://via.placeholder.com/400x200.png?text=Event+Image';
+      }
+
       if (widget.event != null) {
         // Update event
         context.read<EventBloc>().add(
@@ -94,7 +109,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 description: _descriptionController.text.trim(),
                 location: _locationController.text.trim(),
                 date: _selectedDate!,
-                imageUrl: _imageUrlController.text.trim(),
+                imageUrl: imageUrl,
+                imageBytes: _imageBytes,
+                imageName: _imageName,
               ),
             );
       } else {
@@ -105,7 +122,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 description: _descriptionController.text.trim(),
                 location: _locationController.text.trim(),
                 date: _selectedDate!,
-                imageUrl: _imageUrlController.text.trim(),
+                imageUrl: imageUrl,
+                imageBytes: _imageBytes,
+                imageName: _imageName,
               ),
             );
       }
@@ -256,22 +275,131 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Image URL
+                // Image Selection
                 Text(
-                  'Image URL',
+                  'Event Image',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                 ),
                 const SizedBox(height: 8),
-                TextFormField(
-                  controller: _imageUrlController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter image URL',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                GestureDetector(
+                  onTap: () async {
+                    final XFile? image =
+                        await _picker.pickImage(source: ImageSource.gallery);
+                    if (image != null) {
+                      final bytes = await image.readAsBytes();
+                      setState(() {
+                         // On web path might not be enough, but standard file approach
+                        _imageFile = File(image.path);
+                        _imageBytes = bytes;
+                        _imageName = image.name;
+                      });
+                    }
+                  },
+                  child: Container(
+                    height: 180,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    prefixIcon: const Icon(Icons.image),
+                    child: _imageFile != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                kIsWeb
+                                    ? Image.network(_imageFile!.path, fit: BoxFit.cover)
+                                    : Image.file(_imageFile!, fit: BoxFit.cover),
+                                Positioned(
+                                  top: 12,
+                                  right: 12,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.6),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.edit_outlined,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : (widget.event?.imageUrl != null &&
+                                widget.event!.imageUrl!.startsWith('http'))
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(14),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Image.network(
+                                      widget.event!.imageUrl!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Positioned(
+                                      top: 12,
+                                      right: 12,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.6),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.edit_outlined,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF6366F1).withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.cloud_upload_outlined,
+                                      size: 32,
+                                      color: Color(0xFF6366F1),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Click to upload image',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    'SVG, PNG, JPG or GIF (max. 800x400px)',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade500,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
                   ),
                 ),
                 const SizedBox(height: 32),

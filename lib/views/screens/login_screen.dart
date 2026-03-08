@@ -95,28 +95,10 @@ class _LoginScreenState extends State<LoginScreen>
         },
         child: Column(
           children: [
+            Text('Login to your account', style: Theme.of(context).textTheme.headlineSmall),
             // Tab Bar
-            TabBar(
-              controller: _tabController,
-              labelColor: const Color(0xFF6366F1),
-              unselectedLabelColor: Colors.grey,
-              indicatorColor: const Color(0xFF6366F1),
-              tabs: const [
-                Tab(text: 'User'),
-                Tab(text: 'Admin'),
-              ],
-            ),
-            // Tab View Content
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  // User Login Tab
-                  _buildLoginForm(isAdmin: false),
-                  // Admin Login Tab
-                  _buildLoginForm(isAdmin: true),
-                ],
-              ),
+              child: _buildLoginForm(),
             ),
           ],
         ),
@@ -124,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildLoginForm({required bool isAdmin}) {
+  Widget _buildLoginForm() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
       child: Form(
@@ -267,7 +249,6 @@ class _LoginScreenState extends State<LoginScreen>
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                       '/signup',
-                      arguments: isAdmin,
                     );
                   },
                   child: const Text('Sign Up'),

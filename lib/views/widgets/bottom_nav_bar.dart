@@ -17,11 +17,14 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        if (state is! AuthSuccess) {
+        if (state is! AuthSuccess && state is! AuthAuthenticated) {
           return const SizedBox.shrink();
         }
 
-        final isAdmin = state.user.userType == 'admin';
+        final user = state is AuthSuccess
+            ? state.user
+            : (state as AuthAuthenticated).user;
+        final isAdmin = user.userType == 'admin';
 
         if (isAdmin) {
           return BottomNavigationBar(

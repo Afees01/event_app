@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/auth_response_model.dart';
@@ -25,28 +26,21 @@ class AuthService {
           'password': password,
         },
       );
-      debugPrint('AuthService.login raw response: status=${response.statusCode}, data=${response.data}');
+      debugPrint(
+          'AuthService.login raw response: status=${response.statusCode}, data=${response.data}');
 
       if (response.statusCode == 200) {
         return AuthResponse.fromJson(response.data);
       } else {
         return AuthResponse(
           success: false,
-          message: 'Login failed. Please try again.',
+          message: 'Invalid credentials. Please try again.',
         );
       }
     } catch (e) {
-      // offline fallback
       return AuthResponse(
-        success: true,
-        message: 'Login successful (offline)',
-        user: User(
-          id: 'offline',
-          email: email,
-          fullName: 'Offline User',
-          userType: 'user',
-        ),
-        token: 'offline_token',
+        success: false,
+        message: 'Invalid credentials. Please check your email and password.',
       );
     }
   }
@@ -78,17 +72,9 @@ class AuthService {
         );
       }
     } catch (e) {
-      // offline fallback signup success
       return AuthResponse(
-        success: true,
-        message: 'Signup successful (offline)',
-        user: User(
-          id: 'offline',
-          email: email,
-          fullName: name,
-          userType: role,
-        ),
-        token: 'offline_token',
+        success: false,
+        message: 'Signup failed. Please check your credentials.',
       );
     }
   }
@@ -109,7 +95,8 @@ class AuthService {
   // Save user data locally
   Future<void> saveUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userKey, user.toJson().toString());
+    // encode as JSON string
+    await prefs.setString(_userKey, jsonEncode(user.toJson()));
   }
 
   // Get user from local storage
@@ -118,9 +105,12 @@ class AuthService {
     final userJson = prefs.getString(_userKey);
     if (userJson != null) {
       try {
-        // Simple JSON parsing - in production, use proper JSON handling
-        return null; // This needs proper JSON parsing
+        // parse JSON string back to map
+        final Map<String, dynamic> data = Map<String, dynamic>.from(
+            jsonDecode(userJson) as Map<String, dynamic>);
+        return User.fromJson(data);
       } catch (e) {
+        debugPrint('AuthService.getUser parse error: $e');
         return null;
       }
     }

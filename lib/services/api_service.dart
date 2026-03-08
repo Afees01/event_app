@@ -69,7 +69,7 @@ class ApiService {
         headers['Authorization'] = 'Bearer $token';
       }
 
-      final response = await dio.put(
+      final response = await dio.post(
         endpoint,
         data: data,
         options: Options(headers: headers),
@@ -90,7 +90,7 @@ class ApiService {
         headers['Authorization'] = 'Bearer $token';
       }
 
-      final response = await dio.delete(
+      final response = await dio.post(
         endpoint,
         options: Options(headers: headers),
       );
@@ -106,5 +106,49 @@ class ApiService {
 
   void removeToken() {
     dio.options.headers.remove('Authorization');
+  }
+
+  Future<Response> postMultipart({
+    required String endpoint,
+    required FormData data,
+    String? token,
+  }) async {
+    try {
+      final headers = <String, dynamic>{};
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final response = await dio.post(
+        endpoint,
+        data: data,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> putMultipart({
+    required String endpoint,
+    required FormData data,
+    String? token,
+  }) async {
+    try {
+      final headers = <String, dynamic>{};
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final response = await dio.post(
+        endpoint,
+        data: data,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

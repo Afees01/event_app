@@ -64,6 +64,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         currentIndex: 1,
         onTap: (index) {},
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed('/add-event');
+        },
+        backgroundColor: const Color(0xFF6366F1),
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
@@ -159,32 +166,37 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         child: Stack(
           children: [
             // Event Image
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
                 color: Colors.grey[300],
-              ),
-              // child: event.imageUrl != null && event.imageUrl!.isNotEmpty
-              //     ? Image.network(
-              //         event.imageUrl!,
-              //         fit: BoxFit.cover,
-              //         errorBuilder: (context, error, stackTrace) {
-              //           return Center(
-              //             child: Icon(
-              //               Icons.image_not_supported,
-              //               color: Colors.grey[400],
-              //             ),
-              //           );
-              //         },
-              //       )
-              //     : Center(
-              child: Icon(
-                Icons.event,
-                size: 48,
-                color: Colors.grey[400],
+                child: event.imageUrl != null && event.imageUrl!.isNotEmpty
+                    ? Image.network(
+                        event.imageUrl!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Icon(
+                              Icons.event,
+                              size: 48,
+                              color: Colors.grey[400],
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Icon(
+                          Icons.event,
+                          size: 48,
+                          color: Colors.grey[400],
+                        ),
+                      ),
               ),
             ),
-            //),
             // Overlay with event info
             Positioned(
               bottom: 0,

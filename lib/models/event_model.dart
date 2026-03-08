@@ -1,3 +1,5 @@
+import '../services/api_service.dart';
+
 class Event {
   final int id;
   final String title;
@@ -19,7 +21,7 @@ class Event {
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      id: json['id'] as int,
+      id: json['id'] is int ? json['id'] as int : int.tryParse(json['id'].toString()) ?? 0,
       title: json['title'] as String,
       description: json['DESCRIPTION'] as String? ??
           json['description'] as String? ??
@@ -28,11 +30,19 @@ class Event {
       date: DateTime.parse(json['DATE'] as String? ??
           json['date'] as String? ??
           DateTime.now().toIso8601String()),
-      imageUrl: json['imageUrl'] as String?,
+      imageUrl: _processImageUrl((json['image'] ?? json['imageUrl']) as String?),
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
     );
+  }
+
+  static String? _processImageUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+    String normalizedUrl = url.replaceAll('\\', '/');
+    if (normalizedUrl.startsWith('http') || normalizedUrl.startsWith('https')) return normalizedUrl;
+    if (normalizedUrl.startsWith('/')) return '${ApiService.baseUrl}$normalizedUrl';
+    return '${ApiService.baseUrl}/$normalizedUrl';
   }
 
   Map<String, dynamic> toJson() {
