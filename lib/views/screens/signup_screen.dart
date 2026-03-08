@@ -25,6 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  String _selectedRole = 'user';
 
   @override
   void dispose() {
@@ -54,7 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
               name: _fullNameController.text.trim(),
               email: _emailController.text.trim(),
               password: _passwordController.text,
-              role: widget.isAdmin ? 'admin' : 'user',
+              role: _selectedRole,
             ),
           );
     }
@@ -75,17 +76,11 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
+          if (state is SignupSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              const SnackBar(content: Text('Account created successfully! Please login.')),
             );
-            // Navigate based on user role
-            final isAdmin = state.user.userType == 'admin';
-            if (isAdmin) {
-              Navigator.of(context).pushReplacementNamed('/admin-dashboard');
-            } else {
-              Navigator.of(context).pushReplacementNamed('/events');
-            }
+            Navigator.of(context).pushReplacementNamed('/login');
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -254,6 +249,62 @@ class _SignupScreenState extends State<SignupScreen> {
                     }
                     return null;
                   },
+                ),
+                const SizedBox(height: 24),
+
+                // Role Selection
+                Text(
+                  'Register as',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: const Text(
+                            'User',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                          ),
+                          value: 'user',
+                          groupValue: _selectedRole,
+                          activeColor: const Color(0xFF6366F1),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedRole = value!;
+                            });
+                          },
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: const Text(
+                            'Admin',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                          ),
+                          value: 'admin',
+                          groupValue: _selectedRole,
+                          activeColor: const Color(0xFF6366F1),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedRole = value!;
+                            });
+                          },
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 32),
 

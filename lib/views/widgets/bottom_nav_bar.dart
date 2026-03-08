@@ -28,7 +28,7 @@ class BottomNavBar extends StatelessWidget {
 
         if (isAdmin) {
           return BottomNavigationBar(
-            currentIndex: currentIndex,
+            currentIndex: currentIndex.clamp(0, 1),
             onTap: (index) {
               switch (index) {
                 case 0:
@@ -53,7 +53,7 @@ class BottomNavBar extends StatelessWidget {
           );
         } else {
           return BottomNavigationBar(
-            currentIndex: currentIndex,
+            currentIndex: currentIndex.clamp(0, 2),
             onTap: (index) {
               switch (index) {
                 case 0:

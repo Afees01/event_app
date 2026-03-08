@@ -17,6 +17,7 @@ import 'views/screens/event_detail_screen.dart';
 import 'views/screens/admin_dashboard_screen.dart';
 import 'views/screens/add_event_screen.dart';
 import 'views/screens/user_registrations_screen.dart';
+import 'views/screens/splash_screen.dart';
 import 'blocs/event_bloc.dart';
 
 void main() {
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
-        home: const _HomeWrapper(),
+        home: const SplashScreen(),
         onGenerateRoute: _onGenerateRoute,
       ),
     );
@@ -59,6 +60,8 @@ class MyApp extends StatelessWidget {
     switch (settings.name) {
       case '/welcome':
         return MaterialPageRoute(builder: (_) => const WelcomeScreen());
+      case '/auth-check':
+        return MaterialPageRoute(builder: (_) => const _HomeWrapper());
       case '/login':
         final isAdmin = settings.arguments as bool? ?? false;
         return MaterialPageRoute(

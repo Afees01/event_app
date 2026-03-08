@@ -53,3 +53,12 @@ class AuthAuthenticated extends AuthState {
 class AuthUnauthenticated extends AuthState {
   const AuthUnauthenticated();
 }
+
+class SignupSuccess extends AuthState {
+  final String message;
+
+  const SignupSuccess({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

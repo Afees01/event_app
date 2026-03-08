@@ -52,28 +52,28 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               decoration: BoxDecoration(
                 color: Colors.grey[300],
               ),
-              // child: event.imageUrl != null && event.imageUrl!.isNotEmpty
-              //     ? Image.network(
-              //         event.imageUrl!,
-              //         fit: BoxFit.cover,
-              //         errorBuilder: (context, error, stackTrace) {
-              //           return Center(
-              //             child: Icon(
-              //               Icons.image_not_supported,
-              //               size: 64,
-              //               color: Colors.grey[400],
-              //             ),
-              //           );
-              //         },
-              //       )
-              //     : Center(
+              child: event.imageUrl != null && event.imageUrl!.isNotEmpty
+                  ? Image.network(
+                      event.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                        );
+                      },
+                    )
+                  : Center(
               child: Icon(
                 Icons.event,
                 size: 80,
                 color: Colors.grey[400],
               ),
             ),
-            // ),
+            ),
             const SizedBox(height: 24),
 
             // Event Title and Status Badge

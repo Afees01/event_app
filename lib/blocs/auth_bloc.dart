@@ -81,31 +81,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         role: event.role,
       );
 
-      if (response.success &&
-          (response.user != null || response.role != null) &&
-          response.token != null) {
-        // ensure we create a user if not returned
-        User user;
-        if (response.user != null) {
-          user = response.user!;
-        } else {
-          // fallback with role from response
-          user = User(
-            id: 'unknown',
-            email: event.email,
-            fullName: '',
-            userType: response.role?.toLowerCase() ?? 'user',
-          );
-        }
-        // Save token locally
-        await authService.saveToken(response.token!);
-        await authService.saveUser(user);
-
-        emit(AuthSuccess(
-          user: user,
-          token: response.token!,
-          message: response.message,
-        ));
+      if (response.success) {
+        emit(SignupSuccess(message: response.message));
       } else {
         emit(AuthFailure(error: response.message));
       }

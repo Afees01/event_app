@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../blocs/auth_state.dart';
 import '../../blocs/auth_event.dart';
+import '../widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -182,6 +183,10 @@ class HomeScreen extends StatelessWidget {
             ],
           );
         },
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 2,
+        onTap: (index) {},
       ),
     );
   }

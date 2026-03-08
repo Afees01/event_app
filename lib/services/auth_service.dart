@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/auth_response_model.dart';
 import '../models/user_model.dart';
 import 'api_service.dart';
+import 'package:dio/dio.dart';
+
 
 class AuthService {
   final ApiService apiService;
@@ -46,38 +48,52 @@ class AuthService {
   }
 
   // Signup API call
-  Future<AuthResponse> signup({
-    required String email,
-    required String password,
-    required String name,
-    required String role,
-  }) async {
-    try {
-      final response = await apiService.post(
-        endpoint: '/api/auth/signup',
-        data: {
-          'email': email,
-          'password': password,
-          'name': name,
-          'role': role,
-        },
-      );
+ Future<AuthResponse> signup({
+  required String email,
+  required String password,
+  required String name,
+  required String role,
+}) async {
+  try {
+    final response = await apiService.post(
+      endpoint: '/api/auth/signup',
+      data: {
+        'email': email,
+        'password': password,
+        'name': name,
+        'role': role,
+      },
+    );
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        return AuthResponse.fromJson(response.data);
-      } else {
+    return AuthResponse.fromJson(response.data);
+
+  } catch (e) {
+
+    if (e is DioException) {
+
+      // Email already registered
+      if (e.response?.statusCode == 400) {
         return AuthResponse(
           success: false,
-          message: 'Signup failed. Please try again.',
+          message: e.response?.data['message'] ?? "Email already registered",
         );
       }
-    } catch (e) {
-      return AuthResponse(
-        success: false,
-        message: 'Signup failed. Please check your credentials.',
-      );
+
+      // Other server errors
+      if (e.response?.statusCode == 500) {
+        return AuthResponse(
+          success: false,
+          message: "Server error. Please try again later",
+        );
+      }
     }
+
+    return AuthResponse(
+      success: false,
+      message: 'Signup failed. Please check your details.',
+    );
   }
+}
 
   // Save token locally
   Future<void> saveToken(String token) async {

@@ -122,7 +122,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // View all upcoming events
+                    Navigator.of(context).pushNamed('/events');
                   },
                   child: const Text('View All'),
                 ),
