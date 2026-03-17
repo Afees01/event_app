@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:event_app/models/event_response_model.dart';
 import 'package:event_app/models/event_model.dart';
